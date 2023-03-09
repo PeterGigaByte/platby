@@ -101,17 +101,50 @@
 
 </div>
 <script>
-    let notPaidLink = ""
-    let paidLink = ""
-    let dataJsonList = ""
+    //***************************************************************
+    // ** Linky
+    let NOT_PAID_LINK = ""
+    let PAID_LINK = ""
+    let DATA_JSON_LIST_LINK = ""
+
+    //***************************************************************
+    // ** Text definujúci farbu riadku
+    let PAID_CRITERIA = "Áno"
+    let NOT_PAID_CRITERIA= "Nie"
+    // ** Farby
+    let PAID_ROW_COLOR = "green"
+    let NOT_PAID_ROW_COLOR= "red"
+
+    //***************************************************************
+    // ** Timeouty ms
+    let PAID_TIMEOUT = 1000
+    let NOT_PAID_TIMEOUT = 1000
+    let AFTER_REFRESH_TIMEOUT = 1000
+    let INTERVAL_TIMEOUT = 10000
+
+    //***************************************************************
+    // ** Text pre názvy stĺpcov
+    let FIRST_ROW_LABEL = "Meno"
+    let SECOND_ROW_LABEL = "Priezvisko"
+    let THIRD_ROW_LABEL = "Kategória"
+    let FOURTH_ROW_LABEL = "Nar."
+    let FIFTH_ROW_LABEL = "Klub"
+    let SIXTH_ROW_LABEL = "Variabilný"
+    let SEVENTH_ROW_LABEL = "Uhradené"
 
     function clearTable() {
         table.clear().draw();
     }
     function addRow(item){
-        table.row.add([item["Meno"], item["Priezvisko"], item["Kategória"],
-            item["Nar."], item["Klub"],
-            item["Variabilný"], item["Uhradené"], "btn1", "btn2"]).draw(false);
+        table.row.add(
+            [ item[FIRST_ROW_LABEL],
+                item[SECOND_ROW_LABEL],
+                item[THIRD_ROW_LABEL],
+                item[FOURTH_ROW_LABEL],
+                item[FIFTH_ROW_LABEL],
+                item[SIXTH_ROW_LABEL],
+                item[SEVENTH_ROW_LABEL],
+                "btn1", "btn2"]).draw(false);
     }
     function createTable(data){
         data.forEach(addRow);
@@ -121,7 +154,7 @@
             console.log("Request for data.")
             console.log("-----------------")
             const response = await fetch(
-                dataJsonList
+                DATA_JSON_LIST_LINK
             );
             const data = await response.json();
             clearTable()
@@ -136,11 +169,11 @@
             document.getElementById("cover-spin").style.display="block";
             document.getElementById("loader").style.display="block";
             const response = await fetch(
-                paidLink + "?&bib=" + bib
+                PAID_LINK + "?&bib=" + bib
             );
             const data = await response.json();
             if(data === 0){
-                await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, PAID_TIMEOUT));
             }else {
                 console.log("error !!!")
             }
@@ -156,11 +189,11 @@
             document.getElementById("cover-spin").style.display="block";
             document.getElementById("loader").style.display="block";
             const response = await fetch(
-                notPaidLink + "?&bib=" + bib
+                NOT_PAID_LINK + "?&bib=" + bib
             );
             const data = await response.json();
             if(data === 0){
-                await new Promise(r => setTimeout(r, 1000));
+                await new Promise(r => setTimeout(r, NOT_PAID_TIMEOUT));
             }else {
                 console.log("error !!!")
             }
@@ -173,12 +206,12 @@
     const interval = setInterval(async function () {
         document.getElementById("cover-spin").style.display = "block";
         document.getElementById("loader").style.display = "block";
-        await new Promise(r => setTimeout(r, 1000));
+        await new Promise(r => setTimeout(r, AFTER_REFRESH_TIMEOUT));
         loadTable()
         document.getElementById("cover-spin").style.display = "none";
         document.getElementById("loader").style.display = "none";
-    }, 10000);
-    var table = $('#competitors').DataTable({
+    }, INTERVAL_TIMEOUT);
+    var table = $('#competitors').DataTable ({
         "order": [[ 5, 'asc' ]],
         "paging": false,
         columnDefs: [
@@ -196,10 +229,10 @@
             {
                 targets: 6,
                 createdCell: function (td, cellData, rowData, row, col) {
-                    if (rowData[6] === 'áno' ) {
-                        $(td).css('background-color', 'green');
-                    }else if(rowData[6] === 'nie' ) {
-                        $(td).css('background-color', 'red');
+                    if (rowData[6] === PAID_CRITERIA ) {
+                        $(td).css('background-color', PAID_ROW_COLOR);
+                    } else if(rowData[6] === NOT_PAID_CRITERIA ) {
+                        $(td).css('background-color', NOT_PAID_ROW_COLOR);
                     }
                 }
             },
