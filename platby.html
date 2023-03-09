@@ -229,9 +229,9 @@
             {
                 targets: 6,
                 createdCell: function (td, cellData, rowData, row, col) {
-                    if (rowData[6] === PAID_CRITERIA ) {
+                    if (rowData[6].toUpperCase() === PAID_CRITERIA.toUpperCase() ) {
                         $(td).css('background-color', PAID_ROW_COLOR);
-                    } else if(rowData[6] === NOT_PAID_CRITERIA ) {
+                    } else if(rowData[6].toUpperCase() === NOT_PAID_CRITERIA.toUpperCase() ) {
                         $(td).css('background-color', NOT_PAID_ROW_COLOR);
                     }
                 }
